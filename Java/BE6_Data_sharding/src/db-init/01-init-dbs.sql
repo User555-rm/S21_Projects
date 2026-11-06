@@ -1,0 +1,6 @@
+CREATE DATABASE image_db_0;
+CREATE DATABASE image_db_1;
+CREATE DATABASE image_db_2;
+CREATE DATABASE image_db_3;
+
+DROP TABLE IF EXISTS images;

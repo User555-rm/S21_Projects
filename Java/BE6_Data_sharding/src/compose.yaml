@@ -1,0 +1,73 @@
+# src/compose.yaml — общий Compose: postgres + api (Shop API) + image-service
+# Запуск:  docker compose up -d --build
+# Остановка: docker compose down   (с -v — со сбросом тома БД)
+# Переменные окружения берутся из src/.env (копия .env.example) или окружения хоста.
+
+services:
+  postgres:
+    image: postgres:15
+    container_name: shop-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_DB: shop_db
+    ports:
+      - "5433:5432"            # наружу 5433 (pgAdmin/psql/IDEA), внутри сети 5432
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+      - ./db-init:/docker-entrypoint-initdb.d:ro   # создаёт image_db_0..3 при первом старте
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d shop_db"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  api:
+    build: ./api
+    container_name: shop-api
+    restart: unless-stopped
+    ports:
+      - "8080:8080"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/shop_db
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: ${DB_PASSWORD}
+      IMAGE_SERVICE_URL: http://image-service:8081
+      GOOGLE_CLIENT_ID: ${GOOGLE_CLIENT_ID}
+      GOOGLE_CLIENT_SECRET: ${GOOGLE_CLIENT_SECRET}
+      REDIRECT_URI: ${REDIRECT_URI}
+      JWT_SECRET: ${JWT_SECRET}
+    depends_on:
+      postgres:
+        condition: service_healthy
+      image-service:
+        condition: service_started
+
+  image-service:
+    build: ./image
+    container_name: image-service
+    restart: unless-stopped
+    # Порт наружу НЕ публикуем — сервис доступен только внутри Docker-сети (для api).
+    # Для локальной отладки из IDEA раскомментировать:
+    # ports:
+    #   - "127.0.0.1:8081:8081"
+    environment:
+      DATASOURCE_SHARD0_URL: jdbc:postgresql://postgres:5432/image_db_0
+      DATASOURCE_SHARD0_USERNAME: postgres
+      DATASOURCE_SHARD0_PASSWORD: ${DB_PASSWORD}
+      DATASOURCE_SHARD1_URL: jdbc:postgresql://postgres:5432/image_db_1
+      DATASOURCE_SHARD1_USERNAME: postgres
+      DATASOURCE_SHARD1_PASSWORD: ${DB_PASSWORD}
+      DATASOURCE_SHARD2_URL: jdbc:postgresql://postgres:5432/image_db_2
+      DATASOURCE_SHARD2_USERNAME: postgres
+      DATASOURCE_SHARD2_PASSWORD: ${DB_PASSWORD}
+      DATASOURCE_SHARD3_URL: jdbc:postgresql://postgres:5432/image_db_3
+      DATASOURCE_SHARD3_USERNAME: postgres
+      DATASOURCE_SHARD3_PASSWORD: ${DB_PASSWORD}
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+volumes:
+  pgdata:

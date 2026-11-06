@@ -1,0 +1,13 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head><meta charset="utf-8"><title>Успех</title></head>
+<body>
+<h1>Вы вошли через Google</h1>
+<p>Скопируй токен отсюда в Authorize в Swagger:</p>
+<textarea id="tok" rows="4" readonly style="width:100%"></textarea>
+<script>
+    const t = new URLSearchParams(location.search).get('token');
+    document.getElementById('tok').value = t || '(токен не найден)';
+</script>
+</body>
+</html>

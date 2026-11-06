@@ -1,0 +1,60 @@
+stages:
+  - build
+  - style
+  - test
+  - deploy
+
+build-code-job:
+  stage: build
+  tags:
+    - dob6
+  script:
+  # - exit 1
+    - cd src/cat
+    - make
+    - cd ../grep
+    - make
+  artifacts:
+    paths:
+      - src/cat/s21_cat
+      - src/grep/s21_grep
+    expire_in: 30 days
+  # after_script:
+  #   - bash src/tg.sh "Build:" || true
+
+style-check:
+  stage: style
+  tags:
+    - dob6
+  script:
+  # - exit 1
+    - cd src/cat
+    - clang-format -n -Werror *.c *.h
+    - cd ../grep
+    - clang-format -n -Werror *.c *.h
+  # after_script:
+  #   - bash src/tg.sh "Style is" || true
+
+tests:
+  stage: test
+  tags:
+    - dob6
+  script:
+  # - exit 1
+    - cd src/cat
+    - bash test_func_cat.sh
+    - cd ../grep
+    - bash test_func_grep.sh
+  # after_script:
+  #   - bash src/tg.sh "Tests are" || true
+
+Deploy:
+  stage: deploy
+  tags:
+    - dob6
+  when: manual
+  script:
+  # - exit 1
+    - bash src/deploy.sh
+  # after_script:
+  #   - bash src/tg.sh "Deploy is" || true

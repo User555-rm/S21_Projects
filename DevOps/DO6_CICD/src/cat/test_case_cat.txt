@@ -1,0 +1,7 @@
+Hello World
+This is a test
+
+Line after empty line
+	Tab here
+Special chars: end with $
+End

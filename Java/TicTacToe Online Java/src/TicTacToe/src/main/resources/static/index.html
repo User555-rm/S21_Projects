@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Крестики-Нолики</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div id="app">
+        <!-- Экран логина -->
+        <div id="screen-login" class="screen active">
+            <div class="card">
+                <h1>Крестики-Нолики</h1>
+                <div id="login-error" class="error-message hidden"></div>
+                <div class="form-group">
+                    <label for="login-input">Логин</label>
+                    <input type="text" id="login-input" placeholder="Введите логин">
+                </div>
+                <div class="form-group">
+                    <label for="password-input">Пароль</label>
+                    <input type="password" id="password-input" placeholder="Введите пароль">
+                </div>
+                <div class="btn-group">
+                    <button id="btn-login" class="btn btn-primary">Войти</button>
+                    <button id="btn-register" class="btn btn-secondary">Зарегистрироваться</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Экран главного меню -->
+        <div id="screen-menu" class="screen">
+            <div class="card">
+                <h1>Крестики-Нолики</h1>
+                <p id="greeting" class="greeting"></p>
+                <div id="menu-error" class="error-message hidden"></div>
+                <div class="btn-group-vertical">
+                    <button id="btn-new-ai" class="btn btn-primary">Играть с компьютером</button>
+                    <button id="btn-new-pvp" class="btn btn-primary">Играть с игроком</button>
+                    <button id="btn-available" class="btn btn-secondary">Доступные игры</button>
+                    <button id="btn-history" class="btn btn-secondary">История игр</button>
+                    <button id="btn-leaderboard" class="btn btn-secondary">Таблица лидеров</button>
+                    <button id="btn-continue" class="btn btn-secondary hidden">Продолжить игру</button>
+                    <button id="btn-logout" class="btn btn-danger">Выйти</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Экран списка доступных игр -->
+        <div id="screen-available" class="screen">
+            <div class="card">
+                <h1>Доступные игры</h1>
+                <div id="available-error" class="error-message hidden"></div>
+                <div id="available-list"></div>
+                <button id="btn-back-menu-from-available" class="btn btn-secondary">Назад</button>
+            </div>
+        </div>
+
+        <!-- Экран истории игр -->
+        <div id="screen-history" class="screen">
+            <div class="card">
+                <h1>История игр</h1>
+                <div id="history-error" class="error-message hidden"></div>
+                <div id="history-list"></div>
+                <button id="btn-back-menu-from-history" class="btn btn-secondary">Назад</button>
+            </div>
+        </div>
+
+        <!-- Экран таблицы лидеров -->
+        <div id="screen-leaderboard" class="screen">
+            <div class="card">
+                <h1>Таблица лидеров</h1>
+                <div id="leaderboard-error" class="error-message hidden"></div>
+                <div id="leaderboard-list"></div>
+                <button id="btn-back-menu-from-leaderboard" class="btn btn-secondary">Назад</button>
+            </div>
+        </div>
+
+        <!-- Экран игровой доски -->
+        <div id="screen-game" class="screen">
+            <div class="card">
+                <h1 id="game-title">Игра</h1>
+                <div id="game-error" class="error-message hidden"></div>
+                <div id="game-status" class="game-status"></div>
+                <div id="board" class="board"></div>
+                <div id="game-result" class="game-result hidden"></div>
+                <button id="btn-back-menu-from-game" class="btn btn-secondary">Выйти в меню</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

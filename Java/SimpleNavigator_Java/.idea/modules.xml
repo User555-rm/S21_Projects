@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/.idea/A2_SimpleNavigator_v1_0_Java_ID_1391894-Team_TL_tentacos_5b072f66_5a95_427d-1.iml" filepath="$PROJECT_DIR$/.idea/A2_SimpleNavigator_v1_0_Java_ID_1391894-Team_TL_tentacos_5b072f66_5a95_427d-1.iml" />
+      <module fileurl="file://$PROJECT_DIR$/src/main/main.iml" filepath="$PROJECT_DIR$/src/main/main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/src/test/test.iml" filepath="$PROJECT_DIR$/src/test/test.iml" />
+    </modules>
+  </component>
+</project>

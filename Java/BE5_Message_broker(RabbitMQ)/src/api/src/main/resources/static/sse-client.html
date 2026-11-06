@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>SSE клиент (товары)</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        button { margin-right: 8px; padding: 6px 14px; }
+        #log { background: #f4f4f4; border: 1px solid #ccc; padding: 10px;
+            height: 400px; overflow-y: auto; white-space: pre-wrap; font-family: monospace; font-size: 12px; }
+    </style>
+</head>
+<body>
+<h2>SSE-клиент — обновления товаров</h2>
+<p>Открой консоль (F12 → Console), чтобы видеть сообщения. Источник: <code>http://localhost:8080/sse/products</code></p>
+
+<button id="btnConnect">Подключиться</button>
+<button id="btnDisconnect">Отключиться</button>
+
+<h3>Лог</h3>
+<div id="log"></div>
+
+<script>
+    let es = null;
+
+    function log(text) {
+        const time = new Date().toLocaleTimeString();
+        const line = `[${time}] ${text}`;
+        console.log(line);
+        const div = document.getElementById('log');
+        div.textContent += line + '\n';
+        div.scrollTop = div.scrollHeight;
+    }
+
+    function connect() {
+        if (es) {
+            log('Уже подключены');
+            return;
+        }
+        log('Подключаюсь к http://localhost:8080/sse/products ...');
+        es = new EventSource('http://localhost:8080/sse/products');
+
+        es.onopen = function () {
+            log('Соединение открыто');
+        };
+
+        es.onmessage = function (event) {
+            log('Получено: ' + event.data);
+        };
+
+        es.onerror = function () {
+            log('Ошибка/разрыв соединения (EventSource сам переподключится)');
+        };
+    }
+
+    function disconnect() {
+        if (es) {
+            es.close();
+            es = null;
+            log('Соединение закрыто');
+        } else {
+            log('Нет активного соединения');
+        }
+    }
+
+    document.getElementById('btnConnect').addEventListener('click', connect);
+    document.getElementById('btnDisconnect').addEventListener('click', disconnect);
+
+    // Автоподключение при открытии страницы
+    connect();
+</script>
+</body>
+</html>

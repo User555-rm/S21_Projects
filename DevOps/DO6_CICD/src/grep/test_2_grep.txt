@@ -1,0 +1,6 @@
+test line
+another test
+no match here
+TEST LINE
+just a line
+test test test
