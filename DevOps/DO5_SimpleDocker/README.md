@@ -1,0 +1,6 @@
+Docker: контейнеризация FastCGI-сервера + Nginx (Docker, Docker Compose, FastCGI/C, Dockle):
+- Написал мини HTTP-сервер на C + FastCGI (fcgi_stdio), поднимаемый через spawn-fcgi на порту 8080, и конфиг nginx с fastcgi_pass (порт 81 → 127.0.0.1:8080) и отдачей статуса на /status (stub_status).
+- Собрал докер-образ на базе debian:bullseye-slim: единый цепочный RUN (nginx + gcc + libfcgi-dev + spawn-fcgi), компиляция server.c внутрь образа, старт spawn-fcgi + nginx -g 'daemon off;' через CMD.
+- Обеспечил безопасность и прошёл проверку Dockle без ошибок/предупреждений: запуск под непривилегированным пользователем (USER user1, CIS-DI-0001), отказ от latest (DKL-DI-0006), чистка apt-кэша, setcap cap_net_bind_service=+ep для nginx (биндинг портов без root), temp-пути nginx вынесены в /tmp.
+- Развернул проект через Docker Compose: сервис server во внутренней bridge-сети (без EXPOSE и проброса портов наружу) + nginx-proxy с реверс-проксированием 8080→81 и маппингом 80:8080, оркестрация через depends_on.
+- Работал со всем жизненным циклом контейнера: docker pull/run/ps/inspect/exec/stop/restart/cp, export/import без потери конфигурации, монтирование ./nginx volume'ом — обновление конфигурации nginx происходит без пересборки образа; отчёт с 44 скриншотами-доказательствами.
