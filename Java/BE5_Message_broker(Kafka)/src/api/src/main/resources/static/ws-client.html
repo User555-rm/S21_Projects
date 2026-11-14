@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>WebSocket клиент (товары)</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        button { margin-right: 8px; padding: 6px 14px; }
+        #log { background: #f4f4f4; border: 1px solid #ccc; padding: 10px;
+            height: 400px; overflow-y: auto; white-space: pre-wrap; font-family: monospace; font-size: 12px; }
+    </style>
+</head>
+<body>
+<h2>WebSocket-клиент — обновления товаров</h2>
+<p>Открой консоль (F12 → Console), чтобы видеть сообщения. Соединение: <code>ws://localhost:8080/ws/products</code></p>
+
+<button id="btnConnect">Подключиться</button>
+<button id="btnDisconnect">Отключиться</button>
+<button id="btnPing">Отправить ping</button>
+
+<h3>Лог</h3>
+<div id="log"></div>
+
+<script>
+    let ws = null;
+
+    function log(text) {
+        const time = new Date().toLocaleTimeString();
+        const line = `[${time}] ${text}`;
+        console.log(line);
+        const div = document.getElementById('log');
+        div.textContent += line + '\n';
+        div.scrollTop = div.scrollHeight;
+    }
+
+    function connect() {
+        if (ws && (ws.readyState === WebSocket.OPEN || ws.readyState === WebSocket.CONNECTING)) {
+            log('Уже подключены');
+            return;
+        }
+        log('Подключаюсь к ws://localhost:8080/ws/products ...');
+        ws = new WebSocket('ws://localhost:8080/ws/products');
+
+        ws.onopen = function () {
+            log('Соединение открыто');
+        };
+
+        ws.onmessage = function (event) {
+            log('Получено: ' + event.data);
+        };
+
+        ws.onclose = function (event) {
+            log('Соединение закрыто (code=' + event.code + ')');
+            ws = null;
+        };
+
+        ws.onerror = function (event) {
+            log('Ошибка WebSocket');
+        };
+    }
+
+    function disconnect() {
+        if (ws) {
+            ws.close();
+        } else {
+            log('Нет активного соединения');
+        }
+    }
+
+    function ping() {
+        if (ws && ws.readyState === WebSocket.OPEN) {
+            ws.send('ping');
+            log('Отправлено: ping (сервер ответит эхом)');
+        } else {
+            log('Нет открытого соединения');
+        }
+    }
+
+    document.getElementById('btnConnect').addEventListener('click', connect);
+    document.getElementById('btnDisconnect').addEventListener('click', disconnect);
+    document.getElementById('btnPing').addEventListener('click', ping);
+
+    // Автоподключение при открытии страницы
+    connect();
+</script>
+</body>
+</html>
